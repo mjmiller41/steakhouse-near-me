@@ -1,0 +1,33 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  {%- include head.html -%}
+
+  <body>
+    <div class="site-wrapper">
+      <style>
+        {%- include critical.css -%}
+      </style>
+
+      {%- include header.html -%}
+
+      <main class="main" aria-label="Content">
+        <div class="wrapper">
+          {{ content }}
+        </div>
+      </main>
+
+      {%- include footer.html -%}
+      <script>
+              // Load the CSS files here after the HTML is parsed
+              var link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = '{{ site.baseurl }}/assets/main.css';
+              document.head.appendChild(link);
+      </script>
+    </div>
+  </body>
+
+</html>

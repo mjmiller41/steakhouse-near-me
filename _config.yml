@@ -1,0 +1,68 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+#
+# If you need help with YAML syntax, here are some quick references for you:
+# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
+# https://learnxinyminutes.com/docs/yaml/
+#
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
+title: Steakhouse Near Me U.S.
+publisher: Steakhouse Near Me U.S.
+email: steakhousenearme.us@gmail.com
+logo: /assets/images/steakhouse_logo_36x36.png
+logo_icon: icons/steak_icon.svg
+place_type: steakhouse # used in liquid as singular or plural i.e. steakhouse(s)
+description: >- # this means to ignore newlines until "baseurl:"
+  Find the best steakhouse restaurants near you with Steakhouse-Near-Me.us, your ultimate directory for steakhouse spots across the US. Explore top-rated steakhouse bars, local favorites, and hidden gems in every state. Search by location, browse menus, and satisfy your steakhouse cravings today!
+baseurl: '' # the subpath of your site, e.g. /blog
+url: 'https://www.steakhouse-near-me.us' # the site's hostname & protocol, e.g. http://example.com
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+jekyll-seo-tag:
+  defaults:
+    og:type: website
+
+sass:
+  style: compressed
+
+header_pages:
+  - index.html
+  - search.html
+  - about.md
+  - contact.html
+
+collections:
+  states:
+    output: true
+  cities:
+    output: true
+  places:
+    output: true
+
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - steakhouses_places_bk.json
+  - README.md
+  - package.json
+  - package-lock.json
+  - eslint.config.js
+  - CNAME

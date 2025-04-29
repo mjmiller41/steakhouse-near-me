@@ -1,0 +1,35 @@
+---
+layout: page
+---
+<div class="map-page">
+  {%- include us-map.svg -%}
+  <h4 class="directions-text">Click on a state above...</h4>
+  <h4 class="directions-text">Search for a specific place...</h4>
+  {%- include search-form.html -%}
+  {%- unless page.place_id -%}
+    <h4 class="directions-text">or Choose from the list below...</h4>
+  {%- endunless -%}
+  {%- if page.title == 'Home' -%}
+    <h1 class="page-heading">U.S. States with Steakhouse Restaurants</h1>
+  {%- else -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+  {{ content }}
+
+</div>
+<script>
+  if (typeof globalThis.stateSlugs === "undefined"){
+    Object.defineProperty(globalThis,"stateSlugs", {
+      value: [],
+      enumerable:false,
+      configurable:true,
+      writable:true
+    })
+  }
+  globalThis.stateSlugs = [
+    {%- for state in site.states -%}
+      "{{ state.slug }}"{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+</script>
+<script src="{{ "/assets/scripts/usMap.min.js" | relative_url }}"></script>

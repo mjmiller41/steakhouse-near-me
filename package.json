@@ -1,0 +1,54 @@
+{
+  "name": "steakhouse-near-me",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "jekyll-serve": "NODE_ENV=production JEKYLL_ENV=production npm run build-collections && bundle exec jekyll serve -lI",
+    "jekyll-serve-dev": "npm run build-collections-dev && bundle exec jekyll serve -lI",
+    "jekyll-build": "NODE_ENV=production npm run build-collections && JEKYLL_ENV=production bundle exec jekyll build -I",
+    "jekyll-build-dev": "npm run build-collections-dev && bundle exec jekyll build -I",
+    "build-collections": "NODE_ENV=production JEKYLL_ENV=production node _backend/buildPlacesCollection.js",
+    "build-collections-dev": "node _backend/buildPlacesCollection.js",
+    "update-sku-data": "node ./_backend/updateApiSkuData.js",
+    "jekyll-clean": "bundle exec jekyll clean",
+    "deploy": "bash ./deploy.sh",
+    "update-places-db": "node _backend/updatePlacesDb.js",
+    "backup-places-db": "node _backend/backupPlacesDb.js",
+    "restore-places-db": "node ./_backend/restorePlacesTable.js",
+    "find-new-places": "node _backend/findNewPlaces.js",
+    "edit-sku-data": "node _backend/editApiSkuData.js",
+    "transfer-zipcode-data": "node _backend/transferZipcodeData.js"
+  },
+  "keywords": [],
+  "author": "Michael J, Miller",
+  "license": "GPL-3.0",
+  "description": "Jekyll site generator for steakhouse-near-me.us",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjmiller41/steakhouse-near-me.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mjmiller41/steakhouse-near-me.git/issues"
+  },
+  "homepage": "https://github.com/mjmiller41/steakhouse-near-me.git#readme",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@googlemaps/places": "^1.9.1",
+    "axios": "^1.8.2",
+    "cheerio": "^1.0.0",
+    "columnify": "^1.6.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "glob": "^11.0.1",
+    "js-yaml": "^4.1.0",
+    "logger": "^0.0.1",
+    "lunr": "^2.3.9",
+    "node-libcurl": "^4.1.0",
+    "pg": "^8.14.1",
+    "string-similarity": "^4.0.4",
+    "svg-path-commander": "^2.1.10",
+    "url-slug": "^4.0.1"
+  }
+}

@@ -1,0 +1,37 @@
+<style>
+  .price_level {
+    --size: {{ include.size | default: 20px }};
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    .dollar_icons {
+      display: flex;
+      height: var(--size);
+      fill: #7c9f2f;
+    };
+  }
+  .rating-text {
+    font-size: var(--size);
+    line-height: 1;
+  }
+</style>
+<div class="price_level">
+  {%- if include.level != "" -%}
+    <div class="dollar_icons">
+      {%- for i in (1..include.level) -%}
+        {%- include icons/dollar_icon.svg -%}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <span>Cost:&nbsp;</span>
+  {%- endif -%}
+  {%- if include.range -%}
+    <span class="rating-text">{{ include.range }}</span>
+  {%- elsif include.level == empty -%}
+    <span>Unknown</span>
+  {%- endif -%}
+</div>

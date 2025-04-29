@@ -1,0 +1,21 @@
+---
+layout: map-page
+---
+<div class="city-content">
+  <div class="ul-wrapper">
+    <ul class="page-list city-page-list">
+      {%- assign cityPlaces = site.places | where: "city", page.cityName | sort_natural -%}
+      {%- for place in cityPlaces -%}
+        {%- assign place = place | jsonify -%}
+        <li>
+          <a href="{{- place.url -}}">{%- include icons/steak_icon.svg -%}{{ place.name }}</a>
+          <div class="link-info rating">
+            {%- assign r = place.rating | times: 1 -%}
+            {%- assign rc = place.rating_count | times: 1 -%}
+            {%- include star_rating.html rating=r count=rc size="16px" -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
