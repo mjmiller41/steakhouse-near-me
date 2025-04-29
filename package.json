@@ -1,5 +1,5 @@
 {
-  "name": "steakhouse-near-me",
+  "name": "directory-site-maker",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -25,17 +25,13 @@
   "description": "Jekyll site generator for steakhouse-near-me.us",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mjmiller41/steakhouse-near-me.git"
+    "url": "https://github.com/mjmiller41/directory-site-maker.git"
   },
   "bugs": {
-    "url": "https://github.com/mjmiller41/steakhouse-near-me.git/issues"
+    "url": "https://github.com/mjmiller41/directory-site-maker.git/issues"
   },
-  "homepage": "https://github.com/mjmiller41/steakhouse-near-me.git#readme",
+  "homepage": "https://github.com/mjmiller41/directory-site-maker.git#readme",
   "dependencies": {
-    "@googlemaps/google-maps-services-js": "^3.4.0",
-    "@googlemaps/places": "^1.9.1",
-    "axios": "^1.8.2",
-    "cheerio": "^1.0.0",
     "columnify": "^1.6.0",
     "dotenv": "^16.4.7",
     "eslint": "^9.24.0",
@@ -43,12 +39,9 @@
     "eslint-plugin-prettier": "^5.2.6",
     "glob": "^11.0.1",
     "js-yaml": "^4.1.0",
-    "logger": "^0.0.1",
     "lunr": "^2.3.9",
     "node-libcurl": "^4.1.0",
     "pg": "^8.14.1",
-    "string-similarity": "^4.0.4",
-    "svg-path-commander": "^2.1.10",
     "url-slug": "^4.0.1"
   }
 }
