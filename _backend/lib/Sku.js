@@ -15,8 +15,8 @@ const SKU_FUNCS = Object.freeze({
   TEXT_SEARCH: 'Text Search',
   PLACE_DETAILS: 'Place Details'
 })
-const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
-  {
+const DEFAULT_PLACES_API_SKU_DATA = [
+  Object.freeze({
     id: '',
     sku: '635D-A9DD-C520',
     func: SKU_FUNCS.TEXT_SEARCH,
@@ -30,8 +30,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: '4FDA-34B1-A910',
     func: SKU_FUNCS.TEXT_SEARCH,
@@ -70,8 +70,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: '5C36-E272-E88F',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -85,8 +85,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: '6E05-E1C3-8D85',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -110,8 +110,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: '4ED6-464A-2AFC',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -139,8 +139,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: '2D9A-3DE0-3766',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -166,8 +166,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: 'EB23-5ECC-F753',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -211,8 +211,8 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  },
-  {
+  }),
+  Object.freeze({
     id: '',
     sku: 'DCD1-FE97-8C71',
     func: SKU_FUNCS.PLACE_DETAILS,
@@ -226,48 +226,49 @@ const DEFAULT_PLACES_API_SKU_DATA = Object.freeze([
     cumm_cost: 0.0,
     billing_period: '',
     free_limit_hit: false
-  }
-])
+  })
+]
 const SKU_COST_LIMIT = config.costLimit
 
 const db = new DB()
 class SkuData {
-  constructor(skuData) {
-    this.skuObjs = skuData ? skuData : getCurrentSkuData()
-    this.checkWithinCostLimit()
+  constructor() {
+    this.skuObjs = []
   }
 
-  static async getCurrentSkuData() {
-    const data = await db.getSkuDbData()
-    console.log(`Sku data retrieved from db.`)
-    let rows
-    if (data.rowCount > 0) rows = data.rows
-    else rows = DEFAULT_PLACES_API_SKU_DATA
-
-    const currentSkuData = []
-    for (const row of rows) {
-      const sku = new Sku(row)
-      currentSkuData.push(sku)
-    }
-    if (!checkWithinCostLimit(currentSkuData)) throw Error('Costs Exceeded')
-    return currentSkuData
+  static async create() {
+    const instance = new SkuData()
+    await instance.getCurrentSkuData()
+    return instance
   }
 
   async getCurrentSkuData() {
-    const data = await db.getSkuDbData()
-    console.log(`Sku data retrieved from db.`)
-    let rows
-    if (data.rowCount > 0) rows = data.rows
-    else rows = DEFAULT_PLACES_API_SKU_DATA
-
-    const currentSkuData = []
+    let { rows, rowCount } = await db.getSkuDbData()
+    console.log(`${rowCount} Skus retrieved from db.`)
+    if (!rows || rowCount === 0) rows = DEFAULT_PLACES_API_SKU_DATA
     for (const row of rows) {
-      const sku = new Sku(row)
-      currentSkuData.push(sku)
+      this.skuObjs.push(new Sku(row))
     }
-    this.skuObjs = { ...currentSkuData }
-    if (!this.checkWithinCostLimit()) throw Error('Costs Exceeded')
-    return currentSkuData
+    this.checkWithinCostLimit()
+  }
+
+  checkWithinCostLimit() {
+    let skuCostsSum = 0.0
+    for (const sku of Object.keys(this.skuObjs)) {
+      skuCostsSum += Number(this.skuObjs[sku].cumm_cost)
+    }
+    if (skuCostsSum > SKU_COST_LIMIT) {
+      console.log(
+        `Costs exceeded for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
+        Current cost: ${skuCostsSum}`
+      )
+      return false
+    }
+    console.log(
+      `Costs within limits for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
+        Current cost: ${skuCostsSum}`
+    )
+    return true
   }
 
   filterUpdateSkus(update_category, activeSkus) {
@@ -276,33 +277,26 @@ class SkuData {
     // Find highest update category not updated for place
     let updateSkus = activeSkus
     if (update_category) {
-      const updatedSku = activeSkus.filter(
-        sku => sku.category === update_category
-      )
+      const updatedSku = activeSkus.filter(sku => sku.category === update_category)
       const updateLevel = updatedSku[0].cost_level - 1
       updateSkus = activeSkus.filter(sku => updateLevel < sku.cost_level)
     }
     return updateSkus
   }
 
-  checkWithinCostLimit() {
-    let skuCostsSum = 0.0
-    for (const sku of Object.keys(this.skuObjs)) {
-      skuCostsSum += Number(this.skuObjs[sku].cumm_cost)
+  logSkuReport() {
+    const table = []
+    for (const sku of this.skuObjs) {
+      table.push({
+        Sku: sku.description,
+        'Billing Period': sku.billing_period,
+        'Req Count': sku.request_count,
+        'Free Limit Hit': sku.free_limit_hit,
+        'Cumm Cost': sku.cumm_cost
+      })
     }
-    if (skuCostsSum >= SKU_COST_LIMIT) {
-      console.log(
-        `Costs exceeded for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
-      Current cost: ${skuCostsSum}`
-      )
-      return false
-    } else {
-      console.log(
-        `Costs within limits for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
-      Current cost: ${skuCostsSum}`
-      )
-      return true
-    }
+    const columns = columnify(table)
+    console.log(`\n${columns}`)
   }
 
   async save() {
@@ -314,12 +308,45 @@ class SkuData {
   }
 }
 
+function checkWithinCostLimit(currentSkuData) {
+  let skuCostsSum = 0.0
+  for (const sku of Object.keys(currentSkuData)) {
+    skuCostsSum += Number(currentSkuData[sku].cumm_cost)
+  }
+  if (skuCostsSum >= SKU_COST_LIMIT) {
+    console.log(
+      `Costs exceeded for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
+      Current cost: ${skuCostsSum}`
+    )
+    return false
+  } else {
+    console.log(
+      `Costs within limits for ${getCurrMthYr()}, Limit: ${SKU_COST_LIMIT}, \
+      Current cost: ${skuCostsSum}`
+    )
+    return true
+  }
+}
+
+async function getCurrentSkuData() {
+  const { rows, rowCount, error } = await db.getSkuDbData()
+  console.log(`Sku data retrieved from db.`)
+  if (error) throw error
+  if (!rows || rowCount === 0) rows = DEFAULT_PLACES_API_SKU_DATA
+  const currentSkuData = []
+  for (const row of rows) {
+    const sku = new Sku(row)
+    currentSkuData.push(sku)
+  }
+  if (!checkWithinCostLimit(currentSkuData)) throw Error('Costs Exceeded')
+  return currentSkuData
+}
+
 function filterActiveSkus(skus) {
   // Find skus with free requests remaining
   let activeSkus = skus.filter(sku => {
     return (
-      sku.category !== SKU_CATEGORIES.PHOTOS &&
-      sku.request_count < sku.usage_caps[0]
+      sku.category !== SKU_CATEGORIES.PHOTOS && sku.request_count < sku.usage_caps[0]
     )
   })
   if (activeSkus.length === 0) {
@@ -330,32 +357,16 @@ function filterActiveSkus(skus) {
 
 function filterUpdateSkus(update_category, activeSkus) {
   // update_category already has highest update level
-  if (update_category === SKU_CATEGORIES.ATMOSPHERE) return
+  if (update_category === SKU_CATEGORIES.ATMOSPHERE) return null
   // Find highest update category not updated for place
-  let updateSkus = activeSkus
   if (update_category) {
-    const updatedSku = activeSkus.filter(
-      sku => sku.category === update_category
-    )[0]
+    const updatedSku = activeSkus.filter(sku => sku.category === update_category)[0]
     const updateLevel = updatedSku.cost_level - 1
-    updateSkus = activeSkus.filter(sku => updateLevel < sku.cost_level)
+    const updateSkus = activeSkus.filter(sku => updateLevel < sku.cost_level)
+    if (updateSkus.length === 0) return null
+    return updateSkus
   }
-  return updateSkus
-}
-
-function logSkuReport(skuData) {
-  const table = []
-  for (const sku of skuData) {
-    table.push({
-      Sku: sku.description,
-      'Billing Period': sku.billing_period,
-      'Req Count': sku.request_count,
-      'Free Limit Hit': sku.free_limit_hit,
-      'Cumm Cost': sku.cumm_cost
-    })
-  }
-  const columns = columnify(table)
-  console.log(columns)
+  return null
 }
 
 class Sku {
@@ -435,7 +446,7 @@ export {
   Sku,
   SkuData,
   checkWithinCostLimit,
-  logSkuReport,
+  getCurrentSkuData,
   filterActiveSkus,
   filterUpdateSkus
 }

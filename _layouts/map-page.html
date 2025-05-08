@@ -3,19 +3,13 @@ layout: page
 ---
 <div class="map-page">
   {%- include us-map.svg -%}
-  <h4 class="directions-text">Click on a state above...</h4>
-  <h4 class="directions-text">Search for a specific place...</h4>
+  <span class="directions" class="directions-text">Click on a state above...</span>
+  <span class="directions" class="directions-text">Search for a specific place...</span>
   {%- include search-form.html -%}
   {%- unless page.place_id -%}
-    <h4 class="directions-text">or Choose from the list below...</h4>
+    <span class="directions" class="directions-text">or Choose from the list below...</span>
   {%- endunless -%}
-  {%- if page.title == 'Home' -%}
-    <h1 class="page-heading">U.S. States with Steakhouse Restaurants</h1>
-  {%- else -%}
-    <h1 class="page-heading">{{ page.title }}</h1>
-  {%- endif -%}
   {{ content }}
-
 </div>
 <script>
   if (typeof globalThis.stateSlugs === "undefined"){

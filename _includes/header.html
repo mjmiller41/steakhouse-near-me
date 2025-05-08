@@ -1,17 +1,21 @@
+---
+---
 <header class="site-header" role="banner">
   {%- assign default_paths = site.pages | map: "path" -%}
   {%- assign page_paths = site.header_pages | default: default_paths -%}
-  <img
-    class="logo"
-    {%- assign logo = site.logo -%}
-    src="{{ logo |  relative_url }}"
-    width="36px"
-    height="36px"
-    alt="steak logo" />
   <a
-    class="site-title"
+    class="header-title-link"
     rel="author"
-    href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+    href="{{ "/" | relative_url }}">
+    <img
+      class="header-logo"
+      {%- assign logo = site.logo -%}
+      src="{{ logo |  relative_url }}"
+      width="36px"
+      height="36px"
+      alt="{{ site.place_focus }} logo" />
+    <h1 class="header-title">{{ site.title | escape }}</h1>
+  </a>
 
   {%- if page_paths -%}
     <nav class="site-nav">

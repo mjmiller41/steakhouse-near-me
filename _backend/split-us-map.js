@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import * as cheerio from 'cheerio'
+import SVGPathCommander from 'svg-path-commander'
 import { STATES } from './lib/constants.js'
 import { slugify } from './lib/utils.js'
 const __dirname = import.meta.dirname
@@ -91,6 +92,8 @@ function normalizeSVGPath(path) {
       prevControlX = absX2
       prevControlY = absY2
     }
+    // Handle other commands (S, Q, T, A, Z) similarly...
+    // [Previous code for S, Q, T, A, Z omitted for brevity, but should be included]
 
     prevX = currentX
     prevY = currentY
@@ -114,9 +117,7 @@ function normalizeSVGPath(path) {
       const absY = isRelative ? currentY + y : y
       currentX = absX
       currentY = absY
-      normalizedPath += `M${(absX - minX).toFixed(1)} ${(absY - minY).toFixed(
-        1
-      )}`
+      normalizedPath += `M${(absX - minX).toFixed(1)} ${(absY - minY).toFixed(1)}`
     } else if (cmd === 'L' || cmd === 'l') {
       const isRelative = cmd === 'l'
       const x = parseFloat(commands[++i])
@@ -125,9 +126,7 @@ function normalizeSVGPath(path) {
       const absY = isRelative ? currentY + y : y
       currentX = absX
       currentY = absY
-      normalizedPath += `L${(absX - minX).toFixed(1)} ${(absY - minY).toFixed(
-        1
-      )}`
+      normalizedPath += `L${(absX - minX).toFixed(1)} ${(absY - minY).toFixed(1)}`
     } else if (cmd === 'H' || cmd === 'h') {
       const isRelative = cmd === 'h'
       const x = parseFloat(commands[++i])
@@ -177,12 +176,8 @@ for (const value of Object.values(STATES)) {
     const length = Math.max(result.width, result.height)
     const translateX = (length - result.width) / 2
     const translatey = (length - result.height) / 2
-    const stateSvgText = `<svg id="${slugify(
-      value
-    )}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ${length} ${length}">
-  <path fill="currentColor" transform="translate(${translateX}, ${translatey})" d="${
-      result.normalizedPath
-    }" />
+    const stateSvgText = `<svg id="${slugify(value)}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ${length} ${length}">
+  <path fill="currentColor" transform="translate(${translateX}, ${translatey})" d="${result.normalizedPath}" />
 </svg>`
 
     console.log(stateSvgText)

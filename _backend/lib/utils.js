@@ -49,12 +49,34 @@ function registerShutdown(saveDataCbs) {
     console.log('Received SIGTERM. Shutting down gracefully...')
     shutdown(saveDataCbs)
   })
+
+  process.on('beforeExit', async () => {
+    console.log('Process is about to exit. Shutting down gracefully...')
+    const unsavedPlacesCb = saveDataCbs.find(el => el.unsavedPlaces?.length > 0)
+    if (unsavedPlacesCb) {
+      console.log('Unsaved places detected. Saving before exit...')
+      try {
+        // Convert object to JSON string with indentation
+        const jsonString = JSON.stringify(unsavedPlacesCb.unsavedPlaces, null, 2)
+        const filepath = 'unsavedPlaces.json'
+        await fs.writeFile(filepath, jsonString)
+        console.log(`unsavedPlaces saved to ${filepath}`)
+      } catch (error) {
+        console.error(`Error saving object to ${filePath}:`, error)
+      }
+
+      // await fileIO.wr //unsavedPlacesCb.cb(unsavedPlacesCb.unsavedPlaces)
+    }
+    process.exit(0)
+  })
 }
 
 async function shutdown(saveDataCbs) {
   try {
     // upsert data before exit
-    await saveDataCbs.forEach(async ({ data, cb }) => await cb(data))
+    if (Array.isArray(saveDataCbs) || saveDataCbs.length > 0) {
+      await saveDataCbs.forEach(async ({ data, cb }) => await cb(data))
+    }
 
     // Exit the process
     console.log('Process exited gracefully.')
@@ -181,8 +203,7 @@ function calcSurroundingCoords(latitude, longitude, radius) {
           Math.sin(distanceInRadians) *
           Math.cos((latitude * Math.PI) / 180),
         Math.cos(distanceInRadians) -
-          Math.sin((latitude * Math.PI) / 180) *
-            Math.sin((newLat * Math.PI) / 180)
+          Math.sin((latitude * Math.PI) / 180) * Math.sin((newLat * Math.PI) / 180)
       ) *
         180) /
         Math.PI

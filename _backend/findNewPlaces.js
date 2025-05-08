@@ -1,7 +1,7 @@
 import DB from './lib/db.js'
-import { SkuData, SKU_CATEGORIES } from './lib/Sku.js'
+import { getCurrentSkuData, SKU_CATEGORIES } from './lib/Sku.js'
 import { config } from './lib/config.js'
-import { placesTextSearch } from './lib/google.js'
+import { textSearchByLatLng } from './lib/google.js'
 import { Place } from './lib/Place.js'
 import { updatePlacesDb } from './updatePlacesDb.js'
 import { calcSurroundingCoords } from './lib/utils.js'
@@ -10,12 +10,10 @@ async function run() {
   const db = new DB()
   const radius = config.searchRadius
 
-  const currentSkuData = await SkuData.getCurrentSkuData()
+  const currentSkuData = await getCurrentSkuData()
   console.log(`${currentSkuData.length} Skus retrieved from db.`)
 
-  const textSearchSku = currentSkuData.filter(
-    sku => sku.sku === '635D-A9DD-C520'
-  )[0]
+  const textSearchSku = currentSkuData.filter(sku => sku.sku === '635D-A9DD-C520')[0]
 
   const { rows, rowCount } = await db.getZipCoordinates('0')
   console.log(`Processing ${rowCount} unique coordinates`)
@@ -26,7 +24,7 @@ async function run() {
     let searchCount = 0
     let morePages = true
     while (morePages) {
-      const foundIds = await placesTextSearch(latitude, longitude, radius)
+      const foundIds = await textSearchByLatLng(latitude, longitude, radius)
         .then(response => {
           textSearchSku.increment(response.requestCount)
           searchCount++
@@ -60,10 +58,7 @@ async function run() {
 
     const newPlaces = []
     for (const id of newPlaceIds) {
-      const place = new Place({
-        place_id: id,
-        update_category: SKU_CATEGORIES.ID_ONLY
-      })
+      const place = new Place({ place_id: id, update_category: SKU_CATEGORIES.ID_ONLY })
       newPlaces.push(place)
     }
     await updatePlacesDb(newPlaces, currentSkuData)

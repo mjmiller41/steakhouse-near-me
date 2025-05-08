@@ -57,7 +57,6 @@ if (searchTerm) {
     this.field('stateAbbr')
     this.field('slug')
 
-    console.log(globalThis.places)
     globalThis.places.forEach(function (place) {
       // Add the data to lunr
       this.add(place)

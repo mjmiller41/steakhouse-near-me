@@ -4,6 +4,7 @@ layout: map-page
 <div class="state-content">
   {%- assign stateName = site.data.states[page.state] -%}
   <div class="ul-wrapper">
+    <h2 class="page-heading">{{ page.stateName }} Cities with {{ site.place_type }}s</h2>
     <ul class="page-list">
       {%- assign cities = site.cities | where: 'stateName', page.stateName -%}
       {%- for city in cities -%}

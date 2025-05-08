@@ -3,7 +3,6 @@ layout: map-page
 title: Search Results
 nav-title: Search
 permalink: /search.html
-sitemap: false
 ---
 <ul id="search-results" class="page-list"></ul>
 
@@ -21,8 +20,8 @@ sitemap: false
       {% assign place_name = place.name | replace: '"', "'" %}
       {
         id: "{{ place.place_id }}",
-        name: "{{ place_name }}",
-        city: "{{ place.cityName }}",
+        name: "{{ place_name | smartify }}",
+        city: "{{ place.cityName | smartify }}",
         stateName: "{{ place.stateName }}",
         stateAbbr: "{{ place.stateAbbr }}",
         slug: "{{ place.url }}"

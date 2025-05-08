@@ -18,14 +18,15 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Steakhouse Near Me U.S.
-publisher: Steakhouse Near Me U.S.
-email: steakhousenearme.us@gmail.com
-logo: /assets/images/steakhouse_logo_36x36.png
-logo_icon: icons/steak_icon.svg
-place_type: steakhouse # used in liquid as singular or plural i.e. steakhouse(s)
+title: Directory Site Maker
+publisher: Directories Near Me
+email: michael.joseph.miller@gmail.com
+logo: /assets/images/logo.svg
+logo_icon: icons/logo.svg
+place_focus: directory
+place_type: Directory Site # used in liquid as singular or plural i.e. steakhouse(s)
 description: >- # this means to ignore newlines until "baseurl:"
-  Find the best steakhouse restaurants near you with Steakhouse-Near-Me.us, your ultimate directory for steakhouse spots across the US. Explore top-rated steakhouse bars, local favorites, and hidden gems in every state. Search by location, browse menus, and satisfy your steakhouse cravings today!
+  Replace with site discription
 baseurl: '' # the subpath of your site, e.g. /blog
 url: 'https://www.steakhouse-near-me.us' # the site's hostname & protocol, e.g. http://example.com
 
@@ -37,14 +38,13 @@ jekyll-seo-tag:
   defaults:
     og:type: website
 
-sass:
-  style: compressed
-
 header_pages:
   - index.html
   - search.html
   - about.md
   - contact.html
+
+keywords:
 
 collections:
   states:
@@ -55,14 +55,18 @@ collections:
     output: true
 
 exclude:
+  - gemfiles/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
   - .sass-cache/
   - .jekyll-cache/
   - Gemfile
   - Gemfile.lock
   - node_modules/
-  - steakhouses_places_bk.json
+  - _backend/
   - README.md
   - package.json
   - package-lock.json
   - eslint.config.js
-  - CNAME

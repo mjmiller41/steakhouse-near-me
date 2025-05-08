@@ -1,7 +1,6 @@
 import DB from './lib/db.js'
 import { saveObjectToFile } from './lib/fileIO.js'
 import { Place } from './lib/Place.js'
-import { config } from './lib/config.js'
 
 async function run() {
   const db = new DB()
@@ -12,9 +11,12 @@ async function run() {
   for (const row of rows) {
     const place = new Place(row)
     places.push(place)
+    if (place.place_id === 'ChIJHUxVSvlPwokRL9WISyRYubA') {
+      console.log(`ChIJHUxVSvlPwokRL9WISyRYubA - index=${places.indexOf(place)}`)
+    }
   }
-  const filename = `${config.projectId}.json`
-  saveObjectToFile(filename, places)
+  // saveObjectToFile('_places_bk.json', places)
+  db.end()
 }
 
 run()

@@ -1,1 +1,3 @@
-# directory-site-maker
+---
+---
+# {{ site.title }}

@@ -4,15 +4,17 @@ import { writeTextToFile } from './lib/fileIO.js'
 import { Place } from './lib/Place.js'
 import { cleanDir, objToYaml, slugify } from './lib/utils.js'
 import { STATES } from './lib/constants.js'
+import { readYamlFile } from './lib/fileIO.js'
 import { config } from './lib/config.js'
 
+const site = await readYamlFile('_config.yaml')
 const __dirname = import.meta.dirname
 const db = new DB()
 
 async function writeState(stateName, stateAbbr) {
   const yamlObj = {
     layout: 'state',
-    title: `${stateName} cities with Steakhouse Restaurants`,
+    title: `${stateName} cities with ${site.place_type}s`,
     permalink: `/${slugify(stateName)}/`,
     stateAbbr: stateAbbr,
     stateName: stateName
@@ -26,13 +28,12 @@ async function writeState(stateName, stateAbbr) {
 async function writeCity(stateName, stateAbbr, city) {
   const yamlObj = {
     layout: 'city',
-    title: `${city}, ${stateAbbr} Steakhouse Restaurants`,
+    title: `${city}, ${stateAbbr} ${site.place_type}s`,
     permalink: `/${slugify(stateName)}/${slugify(city)}/`,
     stateAbbr: stateAbbr,
     stateName: stateName,
     cityName: city
   }
-
   const cityText = `---\n${objToYaml(yamlObj, 0)}\n---`
   const cityPath = path.join(__dirname, `../_cities/`)
   const filename = `${slugify(city)}-${slugify(stateAbbr)}.md`
@@ -40,18 +41,9 @@ async function writeCity(stateName, stateAbbr, city) {
 }
 
 async function writePlace(stateName, stateAbbr, city, place) {
-  const placeDescription = place.description ? `${place.description} ` : ''
-  let availFor = ''
-  availFor += place.takeout ? ' takeout' : ''
-  availFor += place.delivery ? ', delivery' : ''
-  availFor += place.serves_lunch ? ', lunch' : ''
-  availFor += place.serves_dinner ? ', and dinner' : ''
-  availFor = availFor ? `Available for${availFor}.` : ''
-  const defaultDesc = `${place.name} serves delicious steak in ${city}, ${stateName}. \
-Try delicious steak dishes for a great dining experience. ${availFor}`
+  place.places_description = place.description
+  place.description = place.generative_summary
   const permalink = `/${slugify(stateName)}/${slugify(city)}/${slugify(place.name)}.html`
-  place.description = place.description ?? defaultDesc
-
   let yamlObj = {
     layout: 'place',
     title: place.name,
@@ -70,7 +62,10 @@ Try delicious steak dishes for a great dining experience. ${availFor}`
 }
 
 async function run() {
-  const rows = await db.getAllPlaces('0')
+  const { rows } = await db.getAllPlaces('0', {
+    column: 'generative_summary',
+    query: 'IS NOT NULL'
+  })
   console.log(`${rows.length} rows read from database.`)
 
   await cleanDir(path.join(__dirname, '../_states/**'))
@@ -84,8 +79,7 @@ async function run() {
   let placeCount = 0
   for (const row of rows) {
     const place = new Place(row)
-    if (config.devMode && !['DC', 'FL'].includes(place.state)) continue
-    if (!place.state || !place.city || !place.name) continue
+    if (place.country != 'USA' || !place.state || !place.city || !place.name) continue
     const stateAbbr = place.state
     const stateName = STATES[stateAbbr]
     const city = place.city

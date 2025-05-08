@@ -1,12 +1,13 @@
 node_modules
 package-lock.json
 Gemfile.lock
-_site/*
-_states/*
-_cities/*
-_places/*
+_site
+_states
+_cities
+_places
 .sass-cache
 .jekyll-cache
 .jekyll-metadata
 .vscode
 .env
+_places_bk.json
