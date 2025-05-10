@@ -38,6 +38,15 @@ async function readObjectFromFile(filePath) {
   }
 }
 
+async function readTextFromFile(filename) {
+  try {
+    const fileString = await fs.readFile(filename, { encoding: 'utf8' })
+    return fileString
+  } catch (error) {
+    throw error
+  }
+}
+
 async function writeTextToFile(dirPath, filename, text) {
   const filePath = path.join(dirPath, filename)
   try {
@@ -72,6 +81,7 @@ async function writeYamlFile(filePath, data) {
 export {
   saveObjectToFile,
   readObjectFromFile,
+  readTextFromFile,
   writeTextToFile,
   readYamlFile,
   writeYamlFile

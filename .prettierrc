@@ -4,7 +4,7 @@
   "semi": false,
   "singleQuote": true,
   "objectWrap": "collapse",
-  "bracketSameLine": true,
+  "bracketSameLine": false,
   "singleAttributePerLine": false,
   "arrowParens": "avoid",
   "printWidth": 88

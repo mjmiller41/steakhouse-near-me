@@ -5,31 +5,20 @@ import { Place, sortPlacesByCostLevel } from './lib/Place.js'
 import { getPlaceDetails } from './lib/google.js'
 import { registerShutdown } from './lib/utils.js'
 import { config } from './lib/config.js'
-import logger from './lib/logger.js'
-logger.init('updatePlacesDb.js')
 
 const db = new DB()
 const saveDataCbs = []
-async function updatePlacesDb(_places, skuData) {
+async function updatePlacesDb() {
   registerShutdown(saveDataCbs)
   let places = []
-  if (_places && !Array.isArray(_places)) {
-    throw new Error('Invalid places data provided. Must be an array of Place objects.')
-  } else if (_places) {
-    places = { ..._places }
-    console.log(`Using provided places data with ${places.length} entries.`)
-  } else {
-    ;({ rows: places } = await db.getAllPlaces('0', "!= 'atmosphere'"))
-    console.log(`Using database places data with ${places.length} entries.`)
-  }
-  if (skuData && !Array.isArray(skuData.skuObjs)) {
-    throw new Error('Invalid skuData provided. Must be an array of Sku objects.')
-  } else if (skuData) {
-    console.log(`Using provided skuData with ${skuData.skuObjs.length} entries.`)
-  } else {
-    skuData = await SkuData.create()
-    console.log(`Using database skuData with ${skuData.length} entries.`)
-  }
+  const { rows } = await db.getAllPlaces(
+    (column = 'update_category'),
+    (query = "!= 'atmosphere'"),
+    (orderBy = 'DESC')
+  )
+  console.log(`Using database places data with ${rows.length} entries.`)
+  const skuData = await SkuData.create()
+  console.log(`Using database skuData with ${skuData.length} entries.`)
 
   // Data and CBs for unexpected shutdown event
   saveDataCbs.push({ data: skuData, cb: skuData.save })

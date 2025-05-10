@@ -5,9 +5,9 @@ import { Place } from './lib/Place.js'
 import { cleanDir, objToYaml, slugify } from './lib/utils.js'
 import { STATES } from './lib/constants.js'
 import { readYamlFile } from './lib/fileIO.js'
-import { config } from './lib/config.js'
+import './lib/config.js'
 
-const site = await readYamlFile('_config.yaml')
+const site = await readYamlFile('_config.yml')
 const __dirname = import.meta.dirname
 const db = new DB()
 
@@ -62,10 +62,9 @@ async function writePlace(stateName, stateAbbr, city, place) {
 }
 
 async function run() {
-  const { rows } = await db.getAllPlaces('0', {
-    column: 'generative_summary',
-    query: 'IS NOT NULL'
-  })
+  const { rows } = await db.getAllPlaces(
+    ((column = 'update_category'), (query = "!= 'atmosphere'"), (orderBy = 'DESC'))
+  )
   console.log(`${rows.length} rows read from database.`)
 
   await cleanDir(path.join(__dirname, '../_states/**'))

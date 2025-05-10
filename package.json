@@ -1,28 +1,28 @@
 {
-  "name": "directory-site-maker",
+  "name": "steakhouse-near-me",
   "version": "1.0.0",
   "type": "module",
   "author": "Michael J, Miller",
   "license": "GPL-3.0",
-  "description": "Jekyll site generator for directory websites",
+  "description": "Directory website for steakhouses in the U.S.",
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mjmiller41/directory-site-maker.git"
+    "url": "https://github.com/mjmiller41/steakhouse-near-me.git"
   },
   "bugs": {
-    "url": "https://github.com/mjmiller41/directory-site-maker.git/issues"
+    "url": "https://github.com/mjmiller41/steakhouse-near-me.git/issues"
   },
-  "homepage": "https://github.com/mjmiller41/directory-site-maker.git#readme",
+  "homepage": "https://github.com/mjmiller41/steakhouse-near-me.git#readme",
   "scripts": {
     "serve-dev": "bundle exec jekyll serve -lI",
     "serve-prod": "JEKYLL_ENV=production bundle exec jekyll serve -l",
-    "build-serve-dev": "npm run build-collections-dev && bundle exec jekyll serve -l",
-    "build-serve-prod": "NODE_ENV=production JEKYLL_ENV=production npm run build-collections && bundle exec jekyll serve -l",
-    "build-dev": "bundle exec jekyll build",
-    "build-prod": "JEKYLL_ENV=production bundle exec jekyll clean && bundle exec jekyll build",
-    "build-build-dev": "npm run build-collections-dev && bundle exec jekyll build",
-    "build-build-prod": "NODE_ENV=production npm run build-collections && JEKYLL_ENV=production bundle exec jekyll build",
+    "col-build-serve-dev": "npm run build-collections-dev && bundle exec jekyll serve -l",
+    "col-build-serve-prod": "NODE_ENV=production npm run build-collections && JEKYLL_ENV=production bundle exec jekyll serve -l",
+    "jkl-build-dev": "bundle exec jekyll build",
+    "jkl-build-prod": "bundle exec jekyll clean && JEKYLL_ENV=production bundle exec jekyll build",
+    "col-build-jkl-build-dev": "npm run build-collections-dev && bundle exec jekyll build",
+    "col-build-jkl-build-prod": "NODE_ENV=production npm run build-collections && JEKYLL_ENV=production bundle exec jekyll build",
     "update-sku-data": "node ./_backend/updateApiSkuData.js",
     "jekyll-clean": "bundle exec jekyll clean",
     "build-collections": "NODE_ENV=production JEKYLL_ENV=production node _backend/buildPlacesCollection.js",
