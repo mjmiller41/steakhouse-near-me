@@ -371,6 +371,21 @@ export default class DB {
     )
   }
 
+  async getPlacesToBuild() {
+    let queryTxt = `SELECT * FROM public.${process.env.TABLE_NAME}\n`
+    queryTxt += `WHERE update_category IN ('atmosphere', 'enterprise', 'pro')\n`
+    queryTxt += devMode ? `AND state IN ('FL', 'DC')\n` : ''
+    queryTxt += `ORDER BY state ASC;`
+    try {
+      const result = await this.query(queryTxt)
+      console.log(`${result.rowCount} records retrieved from db.`)
+      console.log(queryTxt)
+      return result
+    } catch (error) {
+      console.error(error, queryTxt)
+    }
+  }
+
   async getAllPlaces(interval, column, query, orderBy = 'ASC') {
     let queryTxt = `SELECT * FROM public.${process.env.TABLE_NAME}\n`
     queryTxt += `WHERE updated_at <= NOW() - INTERVAL '${interval ? interval : '0'}'\n`
